@@ -236,7 +236,6 @@ backend/
 The database schema is automatically managed through SQLModel models and Alembic migrations. The main models are:
 
 ```python
-# User Model
 from sqlmodel import SQLModel, Field
 from datetime import datetime
 from typing import Optional
@@ -250,7 +249,6 @@ class User(SQLModel, table=True):
     is_active: bool = Field(default=True)
     created_at: datetime = Field(default_factory=datetime.utcnow)
 
-# Post Model
 class Post(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     title: str = Field(index=True)
@@ -275,18 +273,6 @@ No manual SQL execution is needed - the application handles:
 - Table relationships
 - Indexes
 - Foreign key constraints
-
-To reset the database:
-
-```bash
-# Windows
-python -m app.db.database
-
-# This will:
-# 1. Drop all existing tables
-# 2. Create new tables
-# 3. Run migrations
-```
 
 ---
 
@@ -315,10 +301,7 @@ Seed sample data:
 ## Running the app
 
 Development:
-uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
-
-Alternative (if you prefer a CLI wrapper and it is installed):
-fastapi run app/main.py --reload --port 8000
+fastapi dev app/main.py --reload --port 8000
 
 Notes:
 
@@ -332,9 +315,8 @@ Notes:
 ### Authentication Endpoints
 
 ```
-POST /auth/register     # Register new user
-POST /auth/login       # Login user (returns JWT token)
-GET /auth/me           # Get current user profile
+POST /register     # Register new user
+POST /login       # Login user (returns JWT token)
 ```
 
 ### Posts Endpoints
@@ -395,7 +377,6 @@ const useDebounce = (value, delay = 300) => {
 
 // Usage in form
 const [email, setEmail] = useState("");
-const debouncedEmail = useDebounce(email, 500);
 
 useEffect(() => {
   validateEmail(debouncedEmail);
