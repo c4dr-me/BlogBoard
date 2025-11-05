@@ -1,0 +1,53 @@
+# Virtual Environments
+.venv/
+venv/
+env/
+ENV/
+.venv
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# IDE
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Environment variables
+.env
+.env.*
+
+# Only ignore Alembic cache, keep configurations
+alembic/__pycache__/
+alembic/versions/__pycache__/
+
+# Logs
+*.log
+logs/
+nohup.out
+
+# Databases
+*.db
+*.sqlite3
+
+# Build
+build/
+dist/
+*.egg-info/
+*.egg
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+
+# Process
+*.pid

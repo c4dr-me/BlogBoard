@@ -1,0 +1,6 @@
+fastapi[standard]
+sqlmodel
+PyJWT
+pwdlib[argon2]
+mysql-connector-python
+alembic
