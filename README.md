@@ -211,7 +211,7 @@ frontend/
 ```
 backend/
 ├── app/
-│   ├── models/         # SQLAlchemy models
+│   ├── models/         # SQL models
 │   │   ├── post.py
 │   │   └── user.py
 │   ├── routes/         # API routes
@@ -220,7 +220,7 @@ backend/
 │   ├── schemas/        # Pydantic schemas
 │   │   ├── post.py
 │   │   └── user.py
-│   ├── utils/          # Utility functions
+│   ├── utils/          # Utility function
 │   │   └── auth.py
 │   └── db/            # Database configuration
 │       ├── database.py
@@ -231,53 +231,62 @@ backend/
 
 ---
 
-## Database schema (PostgreSQL)
+## Database Schema
 
-Minimal SQL schema (save as schema.sql and run with psql or via migrations):
+The database schema is automatically managed through SQLModel models and Alembic migrations. The main models are:
 
-```sql
--- Users
-CREATE TABLE users (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    email VARCHAR(255) NOT NULL UNIQUE,
-    password_hash VARCHAR(255) NOT NULL,
-    full_name VARCHAR(255),
-    is_active BOOLEAN DEFAULT TRUE,
-    is_superuser BOOLEAN DEFAULT FALSE,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
+```python
+# User Model
+from sqlmodel import SQLModel, Field
+from datetime import datetime
+from typing import Optional
 
--- Posts
-CREATE TABLE posts (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    author_id INT NOT NULL,
-    title VARCHAR(255) NOT NULL,
-    content TEXT,
-    published BOOLEAN DEFAULT FALSE,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE CASCADE
-);
+class User(SQLModel, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
+    username: str = Field(unique=True, index=True)
+    email: str = Field(unique=True, index=True)
+    password_hash: str
+    full_name: Optional[str] = None
+    is_active: bool = Field(default=True)
+    created_at: datetime = Field(default_factory=datetime.utcnow)
 
--- Tags
-CREATE TABLE tags (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(50) NOT NULL UNIQUE
-);
-
--- PostTags (many-to-many)
-CREATE TABLE post_tags (
-    post_id INT,
-    tag_id INT,
-    PRIMARY KEY (post_id, tag_id),
-    FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE,
-    FOREIGN KEY (tag_id) REFERENCES tags(id) ON DELETE CASCADE
-);
+# Post Model
+class Post(SQLModel, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
+    title: str = Field(index=True)
+    content: str
+    published: bool = Field(default=False)
+    author_id: int = Field(foreign_key="user.id")
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: Optional[datetime] = Field(default=None)
 ```
 
-To apply:
+### Database Initialization
 
-Use Alembic migrations (recommended for ongoing development).
+The database is automatically initialized when starting the FastAPI application:
+
+1. Models are created through SQLModel
+2. Alembic handles migrations
+3. Tables are created if they don't exist
+
+No manual SQL execution is needed - the application handles:
+
+- Schema creation
+- Table relationships
+- Indexes
+- Foreign key constraints
+
+To reset the database:
+
+```bash
+# Windows
+python -m app.db.database
+
+# This will:
+# 1. Drop all existing tables
+# 2. Create new tables
+# 3. Run migrations
+```
 
 ---
 
