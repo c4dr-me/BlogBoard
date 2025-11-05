@@ -33,4 +33,4 @@ app.include_router(post_routes.router)
 
 @app.get("/", tags=["Root"])
 def root():
-    return {"message": "🚀 Blog Management Dashboard API running"}
+    return {"message": "Blog Management Dashboard API running"}
