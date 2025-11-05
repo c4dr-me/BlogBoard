@@ -163,13 +163,12 @@ Create a `.env` file at project root (or set env vars in your environment from `
 # Frontend (.env)
 
 - VITE_API_BASE_URL=http://localhost:8000
-- VITE_JWT_LOCAL_STORAGE_KEY=blog_auth_token
+- VITE_AUTH_STORAGE_KEY=auth_data
 
 Notes:
 
-- DATABASE_URL should be a full SQLAlchemy-style URL for MySQL
+- DATABASE_URL should be a fully for MySQL
 - JWT_SECRET_KEY should be kept secret and rotated in production
-- FRONTEND_ORIGINS must match your frontend development server
 - VITE\_ prefix is required for frontend environment variables
 
 ## Project Structure
